@@ -125,8 +125,11 @@
     <div id="bycountry" class="slide">
         <p>What's your favorite country? Let's look at how they've done over time.</p>
         Select a country to see its Olympic medal history: <select id="countrySelection" class="dropdown"></select><br>
-        <svg id="bycountrysvg" align = center width="1600" height="800"> 
-        </svg>
+        <div style="display: inline-block;">
+            <p id="selectedcountryinfo"></p>
+            <svg id="bycountrysvg" align = center width="1600" height="800"> 
+            </svg>
+        </div>
         <a href="#bysport" class="ca3-scroll-down-link ca3-scroll-down-arrow thirdarrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
     </div>
     <div id="bysport" class="slide">
@@ -140,9 +143,15 @@
                 <p id="topcountryforsport"></p>
                 <svg id="piechartsvg" style="width: 400; height: 400"></svg>
             </div>
-            <div style="display: inline-block; width: 400; height: 50">
-                <p>Dominance Score</p>
+            <div style="display: inline-block; width: 500; height: 50">
+                <p id="dominancescoretitle"></p>
                 <svg id="dominancesvg" style="width: 400; height: 50"></svg>
+            </div>
+            <div>
+                <p>Some Fun Facts!</p>
+                <p>India won the gold medal in Field Hockey six Olympic Games in a row between 1928 and 1956.</p>
+                <p>South Korea has won 27 out of the 39 gold medals distributed for Archery since 1984.</p>
+                <p>Despite only participating in nine Olympic Games, the USSR has the second highest number of Olympic medals. The USA, which has the most Olympic medals, has participated in 28 Olympic Games.</p>
             </div>
         </div>
         <a href="#conclusion" class="ca3-scroll-down-link ca3-scroll-down-arrow fourtharrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
@@ -165,7 +174,8 @@
         width = totalWidth - margin.right,
         height = totalHeight - margin.top - margin.bottom;
 
-    let variableOptions = ["aus", "can", "chn", "den", "esp", "fin", "fra", "frg", "gbr", "gdr", "ger", "hun", "ita", "jpn", "kor", "new", "nor", "pol", "rou", "rus", "sui", "swe", "urs", "usa"];
+    let variableOptions = 
+["aus", "can", "chn", "den", "esp", "fin", "fra", "frg", "gbr", "gdr", "ger", "hun", "ita", "jpn", "kor", "new", "nor", "pol", "rou", "rus", "sui", "swe", "urs", "usa"];
     
     let country_var;
 
@@ -174,6 +184,33 @@
     let sports_var;
     let first_place, second_place, third_place, fourth_place, fifth_place;
     let dominance_score;
+
+    let country_deets = {
+        "usa": "The United States of America has won most of its medals in Athletics and Swimming. USA is the world leader for medals in Athletics, Swimming, Shooting, Boxing, Diving, Rowing, Basketball, Tennis, Beach Volleyball, Golf, Football, and Softball.",
+        "ger": "Germany has won most of its medals in Canoeing and Equestrian. Germany is the world leader for medals in Canoeing and Equestrian.",
+        "gbr": "Great Britain has won most of its medals in Athletics and Cycling.",
+        "fra": "France has won its most medals in Fencing and Cycling. France is the world leader for medals in Cycling.",
+        "ita": "Italy has won its most medals in Fencing and Cycling. Italy is the world leader for medals in Fencing.",
+        "swe": "Sweden has won its most medals in Wrestling and Athletics.",
+        "can": "Canada has won its most medals in Athletics and Rowing.",
+        "aus": "Australia has won its most medals in Swimming and Athletics.",
+        "rus": "Russia has won its most medals in Wrestling and Gymnastics.",
+        "urs": "The USSR has won most of its medals in Gymnastics and Athletics. The USSR is the world leader for medals in Wrestling and Weightlifting.",
+        "hun": "Hungary has won its most medals in Fencing and Swimming. Hungary is the world leader for medals in Water Polo.",
+        "nor": "Norway has its most medals in Sailing and Shooting.",
+        "gdr": "East Germany has its most medals in Athletics and Swimming.",
+        "chn": "China has its most medals in Diving and Weightlifting China is the world leader for medals in Table Tennis and Badminton",
+        "jpn": "Japan has won its most medals in Judo and Wrestling. Japan is the world leader for medals in Judo.",
+        "fin": "Finland has won its most medals in Athletics and Wrestling.",
+        "sui": "Switzerland has won its most medals in Gymnastics and Rowing.",
+        "rou": "Romania has won its most medals in Gymnastics and Rowing.",
+        "kor": "South Korea has won its most medals in Archery and Taekwondo.",
+        "den": "Denmark has won its most medals in Sailing and Cycling.",
+        "pol": "Poland has won its most medals in Athletics and Boxing.",
+        "esp": "Spain has won its most medals in Sailing and Canoeing.",
+        "frg": "West Germany has won its most medals in Athletics and Equestrian.",
+        "new": "The Netherlands has its most medals in Cycling and Swimming."
+    }
 
     d3.select("#countrySelection")
       .selectAll('myOptions')
@@ -344,6 +381,8 @@
 
             d3.select("#topcountryforsport").text(data[0]["country"])
 
+            d3.select("#dominancescoretitle").text("Dominance Score: Percentage of " + data[0]["country"] + " Golds out of Total Golds")
+
             pie_data = [data[0]["gold"], data[0]["silver"], data[0]["bronze"]]
 
             dominanceData = [100, parseInt(dominance_score*100)]
@@ -429,6 +468,8 @@
 
             d3.select("#topcountryforsport").text(data[0]["country"])
 
+            d3.select("#dominancescoretitle").text("Dominance Score: Percentage of " + data[0]["country"] + " Golds out of Total Golds")
+
             pie_data = [data[0]["gold"], data[0]["silver"], data[0]["bronze"]]
 
             dominanceData = [100, parseInt(dominance_score*100)]
@@ -482,6 +523,8 @@
         let csv_title = country_var + "_medals.csv"
         d3.csv(csv_title, parseRow).then(    
         function (data){        
+
+            d3.select("#selectedcountryinfo").text(country_deets[country_var])
 
             xScale = d3.scaleLinear()
                     .domain(d3.extent(data, function(d) { return d.year; }))
@@ -555,8 +598,9 @@
             .y(function(d) { 
                 return yScale(d.count);})
             .curve(d3.curveMonotoneX)
+
+            d3.select("#selectedcountryinfo").text(country_deets[country_var])
         
-            
             let nestedData = d3.group(data, d => d.medal)
 
             lines.selectAll(".line")
