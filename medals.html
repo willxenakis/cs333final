@@ -1,0 +1,219 @@
+<html>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    svg {
+      background-color: #f3f3f3;
+      border: inset 3px yellow;
+    }
+    g.tick > text { font-size: 12px; font-family: Helvetica, sans-serif; }
+    text { font-family: 'Baloo Bhaina 2', sans-serif; }
+</style>
+
+<body>
+    <div>
+        Select your country: <select id="countrySelection" class="dropdown"></select><br>
+        <svg align = center width="1600" height="800"> 
+            <!-- Add your SVG elements here -->   
+        </svg> 
+    </div>
+
+  <!-- d3 v7 integration -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- d3 topojson -->
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+
+  <script>
+    // set the dimensions and margins of the graph
+    let totalWidth = 900, totalHeight = 600;
+    let margin = {top: 20, right: 100, bottom: 25, left: 400},
+        width = totalWidth - margin.right,
+        height = totalHeight - margin.top - margin.bottom;
+
+    let variableOptions = ["aus", "can", "chn", "den", "esp", "fin", "fra", "frg", "gbr", "gdr", "ger", "hun", "ita", "jpn", "kor", "new", "nor", "pol", "rou", "rus", "sui", "swe", "urs", "usa"];
+    
+    let country_var;
+
+    d3.select("#countrySelection")
+      .selectAll('myOptions')
+     	.data(variableOptions)
+      .enter()
+    	.append('option')
+      .text(function (d) { return d; })
+      .attr("value", function (d) { return d; })
+
+    d3.select("#countrySelection").on("change", function(event,d) {
+        // recover the option that has been chosen
+        const selectedOption = d3.select(this).property("value")
+        // run the updateChart function with this selected option
+        country_var = selectedOption
+        redrawLines()
+    })
+
+    let svg = d3.select("svg")
+              .append("g")
+			  .attr("width", width)
+              .attr("height",totalHeight)
+              .attr("transform","translate("+margin.left+","+margin.top+")");
+			  
+	svg.append("g")
+		.attr("width", width)
+		.attr("height", height);
+
+    svg.append("circle").attr("cx",80).attr("cy",130).attr("r", 6).style("fill", "gold")
+    svg.append("circle").attr("cx",80).attr("cy",160).attr("r", 6).style("fill", "silver")
+    svg.append("circle").attr("cx",80).attr("cy",190).attr("r", 6).style("fill", "yellow")
+    svg.append("text").attr("x", 100).attr("y", 130).text("Gold").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", 100).attr("y", 160).text("Silver").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", 100).attr("y", 190).text("Bronze").style("font-size", "15px").attr("alignment-baseline","middle")
+
+    let lines = svg.append("g");
+	
+    let colors = {
+        "Gold": 'gold',
+        "Bronze": "#CD7F32",
+        "Silver": "silver"
+    }
+
+    function parseRow(d){    
+      let newRow = {} 
+      newRow.medal = d.Medal;
+	  newRow.count = d.Count;
+	  newRow.year = d.Year;
+      return newRow;
+    }
+
+    let xScale, yScale;
+    let xAxis, yAxis;
+
+    function firstDraw(){
+        let csv_title = country_var + "_medals.csv"
+        d3.csv(csv_title, parseRow).then(    
+        function (data){        
+
+            xScale = d3.scaleLinear()
+                    .domain(d3.extent(data, function(d) { return d.year; }))
+                    .range([0, width]);
+                    
+            yScale = d3.scaleLinear()
+                    .domain([0, 200])
+                    .range([height, 0]);
+
+        
+            xAxis = svg.append("g")
+                    .attr("transform","translate(0,"+height+")")
+                    .call(d3.axisBottom(xScale).tickFormat(d3.format('.0f')));
+                    
+            yAxis = svg.append("g")
+                    .call(d3.axisLeft(yScale));
+                                        
+            let lineGenerator = d3.line()
+            .x(function(d) { 
+                return xScale(d.year);})
+            .y(function(d) { 
+                return yScale(d.count);})
+            .curve(d3.curveMonotoneX)
+        
+            
+            let nestedData = d3.group(data, d => d.medal)
+
+            lines.selectAll(".line")
+            .data(nestedData)
+            .join(
+                enter => enter
+                    .append("g")
+                    .append("path")
+                    .attr("class", "line")
+                    .attr("d", function(d,i) {
+                        return lineGenerator(d[1]);
+                    })
+                    .style("fill","none")
+                    .style("stroke", function(d,i) {
+                        return colors[d[0]];
+                    })
+                    .style("opacity", .9)
+                    .style("stroke-width",4),
+                update => update
+                    .attr("class", d => "line")
+                    .transition().duration(500)
+                    .attr("d", function(d,i) {
+                        return lineGenerator(d[1]);
+                    })
+                    .style("fill","none")
+                    .style("stroke", function(d,i) {
+                        return colors[d[0]];
+                    })
+                    .style("opacity", .9)
+                    .style("stroke-width",4),
+                exit => exit
+                    .remove()
+            )        
+        }
+        
+        ); //End CSV
+    }
+
+    function redrawLines(){
+        let csv_title = country_var + "_medals.csv"
+        d3.csv(csv_title, parseRow).then(    
+        function (data){                
+            let lineGenerator = d3.line()
+            .x(function(d) { 
+                return xScale(d.year);})
+            .y(function(d) { 
+                return yScale(d.count);})
+            .curve(d3.curveMonotoneX)
+        
+            
+            let nestedData = d3.group(data, d => d.medal)
+
+            lines.selectAll(".line")
+            .data(nestedData)
+            .join(
+                enter => enter
+                    .append("g")
+                    .append("path")
+                    .attr("class", "line")
+                    .attr("d", function(d,i) {
+                        return lineGenerator(d[1]);
+                    })
+                    .style("fill","none")
+                    .style("stroke", function(d,i) {
+                        return colors[d[0]];
+                    })
+                    .style("opacity", .9)
+                    .style("stroke-width",4),
+                update => update
+                    .attr("class", d => "line")
+                    .transition().duration(500)
+                    .attr("d", function(d,i) {
+                        return lineGenerator(d[1]);
+                    })
+                    .style("fill","none")
+                    .style("stroke", function(d,i) {
+                        return colors[d[0]];
+                    })
+                    .style("opacity", .9)
+                    .style("stroke-width",4),
+                exit => exit
+                    .remove()
+            )        
+        }
+        
+        ); //End CSV
+    }
+
+    async function ready() {
+      // load files async; store the values so we can use them later
+      country_var = "aus"
+      firstDraw()
+    }
+
+    // call the function that draws
+    ready();
+    
+  </script>
+
+</body>
+
+</html>

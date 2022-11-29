@@ -1,0 +1,612 @@
+<html>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    .chart rect:first-of-type {
+        color: #fff;
+        stroke: #3994b6;
+        fill: white;
+    }
+
+    .chart rect:nth-of-type(2) {
+        color: #fff;
+        stroke: transparent;
+        fill: #3994b6;
+    }
+
+    g.tick > text { font-size: 12px; font-family: Helvetica, sans-serif; }
+    text { font-family: 'Baloo Bhaina 2', sans-serif; }
+    html {
+        scroll-behavior: smooth;
+    }
+    .slide{
+        height: 100%;
+        width: 90%;
+    }
+    [data-ca3_icon]::before {
+        font-weight: normal;
+        content: attr(data-ca3_icon);
+    }
+
+    .ca3-scroll-down-arrow {
+        /* background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2hldnJvbl90aGluX2Rvd24iIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiBmaWxsPSJ3aGl0ZSIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggZD0iTTE3LjQxOCw2LjEwOWMwLjI3Mi0wLjI2OCwwLjcwOS0wLjI2OCwwLjk3OSwwYzAuMjcsMC4yNjgsMC4yNzEsMC43MDEsMCwwLjk2OWwtNy45MDgsNy44M2MtMC4yNywwLjI2OC0wLjcwNywwLjI2OC0wLjk3OSwwbC03LjkwOC03LjgzYy0wLjI3LTAuMjY4LTAuMjctMC43MDEsMC0wLjk2OWMwLjI3MS0wLjI2OCwwLjcwOS0wLjI2OCwwLjk3OSwwTDEwLDEzLjI1TDE3LjQxOCw2LjEwOXoiLz48L3N2Zz4=); */
+        background-image: url("down-arrow.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    .ca3-scroll-down-link {
+    cursor:pointer;
+        height: 60px;
+        width: 80px;
+        margin: 0px 0 0 -40px;
+        line-height: 60px;
+        position: absolute;
+        left: 50%;
+        color: #FFF;
+        text-align: center;
+        font-size: 70px;
+        z-index: 100;
+        text-decoration: none;
+        text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.4);
+
+        -webkit-animation: ca3_fade_move_down 2s ease-in-out infinite;
+        -moz-animation:    ca3_fade_move_down 2s ease-in-out infinite;
+        animation:         ca3_fade_move_down 2s ease-in-out infinite;
+    }
+
+    .firstarrow {
+        bottom: 100px;
+    }
+
+    .secondarrow {
+        bottom: -90%;
+    }
+
+    .thirdarrow {
+        bottom: -190%;
+    }
+
+    .fourtharrow {
+        bottom: -290%;
+    }
+
+    #titleslide{
+        font-size: 40pt;
+        line-height: 200%;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    #conclusion{
+        font-size: 40pt;
+        line-height: 200%;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    #areagraph{
+        font-size: 18pt;
+        padding-left: 5%;
+    }
+
+
+    /*animated scroll arrow animation*/
+    @-webkit-keyframes ca3_fade_move_down {
+    0%   { -webkit-transform:translate(0,-20px); opacity: 0;  }
+    50%  { opacity: 1;  }
+    100% { -webkit-transform:translate(0,20px); opacity: 0; }
+    }
+    @-moz-keyframes ca3_fade_move_down {
+    0%   { -moz-transform:translate(0,-20px); opacity: 0;  }
+    50%  { opacity: 1;  }
+    100% { -moz-transform:translate(0,20px); opacity: 0; }
+    }
+    @keyframes ca3_fade_move_down {
+    0%   { transform:translate(0,-20px); opacity: 0;  }
+    50%  { opacity: 1;  }
+    100% { transform:translate(0,20px); opacity: 0; }
+    }
+</style>
+
+<body>
+    <div id="titleslide" class="slide">
+        <br>
+        <p>
+            Welcome to the Olympic Medal visualization. We've analyzed data from 1896 to 2016. We're here to give you a better understanding of what the medalists have looked like since the Olympics started. Here's a big picture overview of the number of medals won since the beginning of the Olympics.
+        </p>
+        <a href="#areagraph" class="ca3-scroll-down-link ca3-scroll-down-arrow firstarrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
+    </div>
+    <div id="areagraph" class="slide">
+        <img src="areagraph.png" alt="Medal Area Graph" width="90%" height="75%">
+        <p>Some of these countries are no longer around, but they're still among the most successful countries at the Olympics. These include the Soviet Union, East Germany (GDR), and West Germany (FRG).   Let's take a closer look at specific countries.</p>
+        <a href="#bycountry" class="ca3-scroll-down-link ca3-scroll-down-arrow secondarrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
+    </div>
+    <div id="bycountry" class="slide">
+        <p>What's your favorite country? Let's look at how they've done over time.</p>
+        Select a country to see its Olympic medal history: <select id="countrySelection" class="dropdown"></select><br>
+        <svg id="bycountrysvg" align = center width="1600" height="800"> 
+        </svg>
+        <a href="#bysport" class="ca3-scroll-down-link ca3-scroll-down-arrow thirdarrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
+    </div>
+    <div id="bysport" class="slide">
+        Select a sport: <select id="sportSelection" class="dropdown"></select><br>
+        <div id="container">
+            <div style="display: inline-block; width: 500; height: 500">
+                <p>Total Medals</p>
+                <svg id="podiumsvg" style="width: 500; height: 500"></svg>
+            </div>
+            <div style="display: inline-block; width: 400; height: 400">
+                <p id="topcountryforsport"></p>
+                <svg id="piechartsvg" style="width: 400; height: 400"></svg>
+            </div>
+            <div style="display: inline-block; width: 400; height: 50">
+                <p>Dominance Score</p>
+                <svg id="dominancesvg" style="width: 400; height: 50"></svg>
+            </div>
+        </div>
+        <a href="#conclusion" class="ca3-scroll-down-link ca3-scroll-down-arrow fourtharrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
+    </div>
+    <div id="conclusion" class="slide">
+        <br>
+        <br>
+        <p>We hope you've learned a bit about worldwide olympic success! We're excited to see how the 2024 Paris Olympics will change our data.</p>
+    </div>
+
+  <!-- d3 v7 integration -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- d3 topojson -->
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+
+  <script>
+    // set the dimensions and margins of the graph
+    let totalWidth = 1400, totalHeight = 600;
+    let margin = {top: 20, right: 250, bottom: 25, left: 400},
+        width = totalWidth - margin.right,
+        height = totalHeight - margin.top - margin.bottom;
+
+    let variableOptions = ["aus", "can", "chn", "den", "esp", "fin", "fra", "frg", "gbr", "gdr", "ger", "hun", "ita", "jpn", "kor", "new", "nor", "pol", "rou", "rus", "sui", "swe", "urs", "usa"];
+    
+    let country_var;
+
+    let sportVariableOptions = ['Archery', 'Athletics', 'Badminton', 'Baseball', 'Basketball', 'Beach Volleyball', 'Boxing', 'Cycling', 'Diving', 'Fencing', 'Football', 'Golf', 'Gymnastics', 'Handball', 'Hockey', 'Rowing', 'Sailing', 'Shooting', 'Swimming', 'Table Tennis', 'Tennis',  'Volleyball', 'Water Polo', 'Weightlifting', 'Wrestling'];
+    
+    let sports_var;
+    let first_place, second_place, third_place, fourth_place, fifth_place;
+    let dominance_score;
+
+    d3.select("#countrySelection")
+      .selectAll('myOptions')
+     	.data(variableOptions)
+      .enter()
+    	.append('option')
+      .text(function (d) { return d; })
+      .attr("value", function (d) { return d; })
+
+    d3.select("#countrySelection").on("change", function(event,d) {
+        // recover the option that has been chosen
+        const selectedOption = d3.select(this).property("value")
+        // run the updateChart function with this selected option
+        country_var = selectedOption
+        redrawLines()
+    })
+
+    let svg = d3.select("#bycountrysvg")
+              .append("g")
+			  .attr("width", width)
+              .attr("height",totalHeight)
+              .attr("transform","translate("+margin.left+","+margin.top+")");
+			  
+	svg.append("g")
+		.attr("width", width)
+		.attr("height", height);
+
+    svg.append("circle").attr("cx",80).attr("cy",60).attr("r", 6).style("fill", "gold")
+    svg.append("circle").attr("cx",80).attr("cy",90).attr("r", 6).style("fill", "silver")
+    svg.append("circle").attr("cx",80).attr("cy",120).attr("r", 6).style("fill", "#CD7F32")
+    svg.append("text").attr("x", 100).attr("y", 60).text("Gold").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", 100).attr("y", 90).text("Silver").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", 100).attr("y", 120).text("Bronze").style("font-size", "15px").attr("alignment-baseline","middle")
+
+    let lines = svg.append("g");
+	
+    let colors = {
+        "Gold": 'gold',
+        "Bronze": "#CD7F32",
+        "Silver": "silver"
+    }
+
+    function parseRow(d){    
+      let newRow = {} 
+      newRow.medal = d.Medal;
+	  newRow.count = d.Count;
+	  newRow.year = d.Year;
+      return newRow;
+    }
+
+    let xScale, yScale;
+    let xAxis, yAxis;
+
+
+    d3.select("#sportSelection")
+      .selectAll('myOptions')
+     	.data(sportVariableOptions)
+      .enter()
+    	.append('option')
+      .text(function (d) { return d; })
+      .attr("value", function (d) { return d; })
+
+    d3.select("#sportSelection").on("change", function(event,d) {
+        // recover the option that has been chosen
+        const selectedOption = d3.select(this).property("value")
+        // run the updateChart function with this selected option
+        sports_var = selectedOption
+        redrawSport()
+    })
+
+    const sports_svg = d3.select("#podiumsvg");
+    const pie_svg = d3.select("#piechartsvg")
+
+    const g = pie_svg.append("g")
+               .attr("transform", "translate(150,120)");
+
+    var widthMarker=700;
+    
+    var imgContainer = sports_svg.append("g")
+        
+    var img = imgContainer.append("svg:image")
+        .attr("xlink:href", "podium.svg")
+        .attr("width", widthMarker)
+        .attr("height", widthMarker);
+        
+    var first = imgContainer.append("svg:text")
+        .attr("dy", widthMarker/2 -75)
+        .text(first_place)
+        .style('fill', 'black');
+
+    first.attr("dx", (widthMarker - first.node().getComputedTextLength()) / 2 -70);
+
+    var second = imgContainer.append("svg:text")
+        .attr("dy", widthMarker/2 -25)
+        .text(second_place)
+        .style('fill', 'black');
+
+    second.attr("dx", (widthMarker - second.node().getComputedTextLength()) / 2 - 15);
+
+    var third = imgContainer.append("svg:text")
+        .attr("dy", widthMarker/2)
+        .text(third_place)
+        .style('fill', 'black');
+
+    third.attr("dx", (widthMarker - third.node().getComputedTextLength()) / 2 - 140);
+
+    var fourth = imgContainer.append("svg:text")
+        .attr("dy", widthMarker/2 + 35)
+        .text(fourth_place)
+        .style('fill', 'black');
+
+    fourth.attr("dx", (widthMarker - fourth.node().getComputedTextLength()) / 2 + 55);
+
+    var fifth = imgContainer.append("svg:text")
+        .attr("dy", widthMarker/2 + 60)
+        .text(fifth_place)
+        .style('fill', 'black');
+
+    fifth.attr("dx", (widthMarker - fifth.node().getComputedTextLength()) / 2 - 200);
+
+    // Creating Dominance Bar
+
+    let dominanceData = [100, 100];
+  
+    var chart = d3.select("#dominancesvg") // creating the svg object inside the container div
+        .attr("class", "chart")
+        .attr("width", 300) // bar has a fixed width
+        .attr("height", 20 * dominanceData.length);
+    
+    var x = d3.scaleLinear() // takes the fixed width and creates the percentage from the data values
+        .domain([0, 100])
+        .range([0, 300]); 
+
+    // Creating Pie generator
+    var pie = d3.pie();
+
+    let medal_colors = ["gold", "silver", "#CD7F32"]
+  
+    // Creating arc
+    var arc = d3.arc()
+                .innerRadius(0)
+                .outerRadius(100);
+
+    // Grouping different arcs
+    let arcs;
+
+    function parseSportRow(d){    
+      let newRow = {} 
+      newRow.country = d.NOC;
+	  newRow.gold = d.Gold;
+	  newRow.silver = d.Silver;
+      newRow.bronze = d.Bronze;
+      dominance_score = d.Dominance
+      return newRow;
+    }
+
+    function redrawSport(){
+        let csv_title = sports_var.toLowerCase() + ".csv"
+        d3.csv(csv_title, parseSportRow).then(    
+        function (data){        
+            console.log(data)
+            console.log(dominance_score)
+            first.text(data[0]["country"])
+            second.text(data[1]["country"])
+            third.text(data[2]["country"])
+            fourth.text(data[3]["country"])
+            fifth.text(data[4]["country"])
+
+            d3.select("#topcountryforsport").text(data[0]["country"])
+
+            pie_data = [data[0]["gold"], data[0]["silver"], data[0]["bronze"]]
+
+            dominanceData = [100, parseInt(dominance_score*100)]
+
+            arcs = g.selectAll("arc")
+                .data(pie(pie_data))
+                .enter()
+                .append("g");
+
+            // Appending path 
+            arcs.append("path")
+                .attr("fill", (data, i)=>{
+                    let value=data.data;
+                    return medal_colors[i];
+                })
+                .attr("d", arc);
+
+            arcs.append("text")
+            .attr("transform",(d)=>{ 
+                    return "translate("+ 
+                    arc.centroid(d) + ")"; 
+            })
+            .text(function(d){
+               return d.data; 
+               });
+                
+            chart.selectAll("rect") // adding the text labels to the bar
+                .data(dominanceData)
+                .join(
+                enter => enter
+                    .attr("width", x)
+                    .attr("height", 20)
+                    .attr("rx", 5) // rounded corners
+                    .attr("ry", 5),
+                update => update
+                    .attr("class", d => "rect")
+                    .transition().duration(500)
+                    .attr("width", x)
+                    .attr("height", 20)
+                    .attr("rx", 5) // rounded corners
+                    .attr("ry", 5),
+                exit => exit
+                    .remove()
+            )
+
+            chart.selectAll("text") // adding the text labels to the bar
+                .data(dominanceData)
+                .join(
+                enter => enter
+                    .attr("x", x)
+                    .attr("y", 10) // y position of the text inside bar
+                    .attr("dx", -3) // padding-right
+                    .attr("dy", ".35em") // vertical-align: middle
+                    .attr("text-anchor", "end") // text-align: right
+                    .text(String),
+                update => update
+                    .attr("class", d => "text")
+                    .transition().duration(500)
+                    .attr("x", x)
+                    .attr("y", 10) // y position of the text inside bar
+                    .attr("dx", -3) // padding-right
+                    .attr("dy", ".35em") // vertical-align: middle
+                    .attr("text-anchor", "end") // text-align: right
+                    .text(String),
+                exit => exit
+                    .remove()
+            )
+        }
+        )
+    }
+
+    function drawSport(){
+        let csv_title = "archery" + ".csv"
+        d3.csv(csv_title, parseSportRow).then(    
+        function (data){        
+            console.log(data)
+            console.log(dominance_score)
+            first.text(data[0]["country"])
+            second.text(data[1]["country"])
+            third.text(data[2]["country"])
+            fourth.text(data[3]["country"])
+            fifth.text(data[4]["country"])
+
+            d3.select("#topcountryforsport").text(data[0]["country"])
+
+            pie_data = [data[0]["gold"], data[0]["silver"], data[0]["bronze"]]
+
+            dominanceData = [100, parseInt(dominance_score*100)]
+
+            arcs = g.selectAll("arc")
+                .data(pie(pie_data))
+                .enter()
+                .append("g");
+
+            // Appending path 
+            arcs.append("path")
+                .attr("fill", (data, i)=>{
+                    let value=data.data;
+                    return medal_colors[i];
+                })
+                .attr("d", arc);
+
+            arcs.append("text")
+            .attr("transform",(d)=>{ 
+                    return "translate("+ 
+                    arc.centroid(d) + ")"; 
+            })
+            .text(function(d){
+               return d.data; 
+               });
+
+            chart.selectAll("rect") // this is what actually creates the bars
+                .data(dominanceData)
+            .enter().append("rect")
+                .attr("width", x)
+                .attr("height", 20)
+                .attr("rx", 5) // rounded corners
+                .attr("ry", 5);
+                
+            chart.selectAll("text") // adding the text labels to the bar
+                .data(dominanceData)
+            .enter().append("text")
+                .attr("x", x)
+                .attr("y", 10) // y position of the text inside bar
+                .attr("dx", -3) // padding-right
+                .attr("dy", ".35em") // vertical-align: middle
+                .attr("text-anchor", "end") // text-align: right
+                .text(String);
+
+         }
+        )
+    }
+
+
+    function firstDraw(){
+        let csv_title = country_var + "_medals.csv"
+        d3.csv(csv_title, parseRow).then(    
+        function (data){        
+
+            xScale = d3.scaleLinear()
+                    .domain(d3.extent(data, function(d) { return d.year; }))
+                    .range([0, width]);
+                    
+            yScale = d3.scaleLinear()
+                    .domain([0, 200])
+                    .range([height, 0]);
+
+        
+            xAxis = svg.append("g")
+                    .attr("transform","translate(0,"+height+")")
+                    .call(d3.axisBottom(xScale).tickFormat(d3.format('.0f')));
+                    
+            yAxis = svg.append("g")
+                    .call(d3.axisLeft(yScale));
+                                        
+            let lineGenerator = d3.line()
+            .x(function(d) { 
+                return xScale(d.year);})
+            .y(function(d) { 
+                return yScale(d.count);})
+            .curve(d3.curveMonotoneX)
+        
+            
+            let nestedData = d3.group(data, d => d.medal)
+
+            lines.selectAll(".line")
+            .data(nestedData)
+            .join(
+                enter => enter
+                    .append("g")
+                    .append("path")
+                    .attr("class", "line")
+                    .attr("d", function(d,i) {
+                        return lineGenerator(d[1]);
+                    })
+                    .style("fill","none")
+                    .style("stroke", function(d,i) {
+                        return colors[d[0]];
+                    })
+                    .style("opacity", .9)
+                    .style("stroke-width",3),
+                update => update
+                    .attr("class", d => "line")
+                    .transition().duration(500)
+                    .attr("d", function(d,i) {
+                        return lineGenerator(d[1]);
+                    })
+                    .style("fill","none")
+                    .style("stroke", function(d,i) {
+                        return colors[d[0]];
+                    })
+                    .style("opacity", .9)
+                    .style("stroke-width",3),
+                exit => exit
+                    .remove()
+            )        
+        }
+        
+        ); //End CSV
+    }
+
+    function redrawLines(){
+        let csv_title = country_var + "_medals.csv"
+        d3.csv(csv_title, parseRow).then(    
+        function (data){                
+            let lineGenerator = d3.line()
+            .x(function(d) { 
+                return xScale(d.year);})
+            .y(function(d) { 
+                return yScale(d.count);})
+            .curve(d3.curveMonotoneX)
+        
+            
+            let nestedData = d3.group(data, d => d.medal)
+
+            lines.selectAll(".line")
+            .data(nestedData)
+            .join(
+                enter => enter
+                    .append("g")
+                    .append("path")
+                    .attr("class", "line")
+                    .attr("d", function(d,i) {
+                        return lineGenerator(d[1]);
+                    })
+                    .style("fill","none")
+                    .style("stroke", function(d,i) {
+                        return colors[d[0]];
+                    })
+                    .style("opacity", .9)
+                    .style("stroke-width",3),
+                update => update
+                    .attr("class", d => "line")
+                    .transition().duration(500)
+                    .attr("d", function(d,i) {
+                        return lineGenerator(d[1]);
+                    })
+                    .style("fill","none")
+                    .style("stroke", function(d,i) {
+                        return colors[d[0]];
+                    })
+                    .style("opacity", .9)
+                    .style("stroke-width",3),
+                exit => exit
+                    .remove()
+            )        
+        }
+        
+        ); //End CSV
+    }
+
+    async function ready() {
+      // load files async; store the values so we can use them later
+      country_var = "aus"
+      firstDraw()
+      drawSport()
+    }
+
+    // call the function that draws
+    ready();
+    
+  </script>
+
+</body>
+
+</html>
