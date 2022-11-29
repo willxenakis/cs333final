@@ -60,15 +60,15 @@
     }
 
     .secondarrow {
-        bottom: -90%;
+        bottom: -95%;
     }
 
     .thirdarrow {
-        bottom: -190%;
+        bottom: -197%;
     }
 
     .fourtharrow {
-        bottom: -290%;
+        bottom: -297%;
     }
 
     #titleslide{
@@ -100,6 +100,40 @@
     a{
         color: blue;
     }
+    #bycountrysvg {
+        margin-left: -150px;
+    }
+
+    #text {
+        font-size: 20pt;
+        text-align: center;
+    }
+
+    #text2 {
+        font-size: 15pt;   
+    }
+
+    #bysport {
+        font-size: 15pt;   
+    }
+
+    #selectedcountryinfo {
+        color: #3994b6;
+    }
+
+    #container {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #pie {
+        margin-top: 50px;
+    }
+
+    #dom {
+        margin-top: 100px;
+    }
+
 
 
     /*animated scroll arrow animation*/
@@ -129,41 +163,42 @@
         <a href="#areagraph" class="ca3-scroll-down-link ca3-scroll-down-arrow firstarrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
     </div>
     <div id="areagraph" class="slide">
-        <img src="areagraph.png" alt="Medal Area Graph" width="90%" height="75%">
+        <img src="areagraph.png" alt="Medal Area Graph" width="90%" height="78%">
         <p>Some of these countries are no longer around, but they're still among the most successful countries at the Olympics. These include the Soviet Union, East Germany (GDR), and West Germany (FRG).   Let's take a closer look at specific countries.</p>
         <a href="#bycountry" class="ca3-scroll-down-link ca3-scroll-down-arrow secondarrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
     </div>
     <div id="bycountry" class="slide">
-        <p>What's your favorite country? Let's look at how they've done over time.</p>
-        Select a country to see its Olympic medal history: <select id="countrySelection" class="dropdown"></select><br>
-        <div style="display: inline-block;">
-            <p id="selectedcountryinfo"></p>
-            <svg id="bycountrysvg" align = center width="1600" height="800"> 
-            </svg>
+        <div id = "text">
+            <p>What's your favorite country? Let's look at how they've done over time.</p>
+            Select a country to see its Olympic medal history: <select id="countrySelection" class="dropdown"></select><br>
+            <div style="display: inline-block;">
+                <p id="selectedcountryinfo"></p>
+                <svg id="bycountrysvg" width="1600" height="800"> 
+                </svg>
+            </div>
         </div>
         <a href="#bysport" class="ca3-scroll-down-link ca3-scroll-down-arrow thirdarrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
     </div>
     <div id="bysport" class="slide">
         Select a sport: <select id="sportSelection" class="dropdown"></select><br>
         <div id="container">
-            <div style="display: inline-block; width: 500; height: 500">
-                <p>Total Medals</p>
+            <div id = "podium" style = "width: 500; height: 500">
                 <svg id="podiumsvg" style="width: 500; height: 500"></svg>
             </div>
-            <div style="display: inline-block; width: 400; height: 400">
+            <div id = "pie" style = "width: 400; height: 400">
                 <p id="topcountryforsport"></p>
                 <svg id="piechartsvg" style="width: 400; height: 400"></svg>
             </div>
-            <div style="display: inline-block; width: 500; height: 50">
+            <div id = "dom" style = "width: 500; height: 50">
                 <p id="dominancescoretitle"></p>
                 <svg id="dominancesvg" style="width: 400; height: 50"></svg>
             </div>
-            <div>
-                <p>Some Fun Facts!</p>
-                <p>India won the gold medal in Field Hockey six Olympic Games in a row between 1928 and 1956.</p>
-                <p>South Korea has won 27 out of the 39 gold medals distributed for Archery since 1984.</p>
-                <p>Despite only participating in nine Olympic Games, the USSR has the second highest number of Olympic medals. The USA, which has the most Olympic medals, has participated in 28 Olympic Games.</p>
-            </div>
+        </div>
+        <div id = "text2">
+            <p>Some Fun Facts!</p>
+            <p>India won the gold medal in Field Hockey six Olympic Games in a row between 1928 and 1956.</p>
+            <p>South Korea has won 27 out of the 39 gold medals distributed for Archery since 1984.</p>
+            <p>Despite only participating in nine Olympic Games, the USSR has the second highest number of Olympic medals. The USA, which has the most Olympic medals, has participated in 28 Olympic Games.</p>
         </div>
         <a href="#conclusion" class="ca3-scroll-down-link ca3-scroll-down-arrow fourtharrow" data-ca3_iconfont="ETmodules" data-ca3_icon=""></a>
     </div>
@@ -198,21 +233,21 @@
     let dominance_score;
 
     let country_deets = {
-        "usa": "The United States of America has won most of its medals in Athletics and Swimming. USA is the world leader for medals in Athletics, Swimming, Shooting, Boxing, Diving, Rowing, Basketball, Tennis, Beach Volleyball, Golf, Football, and Softball.",
-        "ger": "Germany has won most of its medals in Canoeing and Equestrian. Germany is the world leader for medals in Canoeing and Equestrian.",
+        "usa": "The United States of America has won most of its medals in Athletics and Swimming. They're the world leader for medals in Athletics, Swimming, Shooting, Boxing, Diving, Rowing, Basketball, Tennis, Beach Volleyball, Golf, Football, and Softball.",
+        "ger": "Germany has won most of its medals in Canoeing and Equestrian. They're the world leader for medals in Canoeing and Equestrian.",
         "gbr": "Great Britain has won most of its medals in Athletics and Cycling.",
-        "fra": "France has won its most medals in Fencing and Cycling. France is the world leader for medals in Cycling.",
-        "ita": "Italy has won its most medals in Fencing and Cycling. Italy is the world leader for medals in Fencing.",
+        "fra": "France has won its most medals in Fencing and Cycling. They're the world leader for medals in Cycling.",
+        "ita": "Italy has won its most medals in Fencing and Cycling. They're the world leader for medals in Fencing.",
         "swe": "Sweden has won its most medals in Wrestling and Athletics.",
         "can": "Canada has won its most medals in Athletics and Rowing.",
         "aus": "Australia has won its most medals in Swimming and Athletics.",
         "rus": "Russia has won its most medals in Wrestling and Gymnastics.",
-        "urs": "The USSR has won most of its medals in Gymnastics and Athletics. The USSR is the world leader for medals in Wrestling and Weightlifting.",
-        "hun": "Hungary has won its most medals in Fencing and Swimming. Hungary is the world leader for medals in Water Polo.",
+        "urs": "The USSR has won most of its medals in Gymnastics and Athletics. They're the world leader for medals in Wrestling and Weightlifting.",
+        "hun": "Hungary has won its most medals in Fencing and Swimming. They're the world leader for medals in Water Polo.",
         "nor": "Norway has its most medals in Sailing and Shooting.",
         "gdr": "East Germany has its most medals in Athletics and Swimming.",
-        "chn": "China has its most medals in Diving and Weightlifting China is the world leader for medals in Table Tennis and Badminton",
-        "jpn": "Japan has won its most medals in Judo and Wrestling. Japan is the world leader for medals in Judo.",
+        "chn": "China has its most medals in Diving and Weightlifting. They're the world leader for medals in Table Tennis and Badminton",
+        "jpn": "Japan has won its most medals in Judo and Wrestling. They're the world leader for medals in Judo.",
         "fin": "Finland has won its most medals in Athletics and Wrestling.",
         "sui": "Switzerland has won its most medals in Gymnastics and Rowing.",
         "rou": "Romania has won its most medals in Gymnastics and Rowing.",
@@ -300,44 +335,45 @@
                .attr("transform", "translate(150,120)");
 
     var widthMarker=700;
+    var heightMarker = 500;
     
     var imgContainer = sports_svg.append("g")
         
     var img = imgContainer.append("svg:image")
         .attr("xlink:href", "podium.svg")
         .attr("width", widthMarker)
-        .attr("height", widthMarker);
+        .attr("height", heightMarker);
         
     var first = imgContainer.append("svg:text")
-        .attr("dy", widthMarker/2 -75)
+        .attr("dy", heightMarker/2 -65)
         .text(first_place)
         .style('fill', 'black');
 
     first.attr("dx", (widthMarker - first.node().getComputedTextLength()) / 2 -70);
 
     var second = imgContainer.append("svg:text")
-        .attr("dy", widthMarker/2 -25)
+        .attr("dy", heightMarker/2 -25)
         .text(second_place)
         .style('fill', 'black');
 
     second.attr("dx", (widthMarker - second.node().getComputedTextLength()) / 2 - 15);
 
     var third = imgContainer.append("svg:text")
-        .attr("dy", widthMarker/2)
+        .attr("dy", heightMarker/2)
         .text(third_place)
         .style('fill', 'black');
 
     third.attr("dx", (widthMarker - third.node().getComputedTextLength()) / 2 - 140);
 
     var fourth = imgContainer.append("svg:text")
-        .attr("dy", widthMarker/2 + 35)
+        .attr("dy", heightMarker/2 + 25)
         .text(fourth_place)
         .style('fill', 'black');
 
     fourth.attr("dx", (widthMarker - fourth.node().getComputedTextLength()) / 2 + 55);
 
     var fifth = imgContainer.append("svg:text")
-        .attr("dy", widthMarker/2 + 60)
+        .attr("dy", heightMarker/2 + 45)
         .text(fifth_place)
         .style('fill', 'black');
 
